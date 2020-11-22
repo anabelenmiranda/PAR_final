@@ -1,6 +1,5 @@
 import csv
 import os
-import datetime
 
 def clientes_archivo():
     nombre = input("Ingrese nombre del archivo de clientes (sin la extensión): ")
@@ -28,6 +27,7 @@ def abrir_archivo(nombre_archivo):
 
 def opcion_1(in_nombre, csv_clientes, coincidencias):  
     linea = '-'*78
+    
     for Nombre, Dirección, Documento, Fecha, Correo, Empresa in csv_clientes:
         if in_nombre in Nombre:
             print("{}\nCliente: {}\n{}\nDirección: {}\nDNI: {}\nFecha de alta: {}\nCorreo Electrónico: {}\nEmpresa: {}\n".format(linea, Nombre, linea, Dirección, Documento, Fecha, Correo, Empresa))
@@ -37,9 +37,11 @@ def opcion_1(in_nombre, csv_clientes, coincidencias):
         print("No se encontraron coincidencias")
 
 def opcion_2(in_empresa, lista_empresa_actual, coincidencias):
-    linea = '-'*78
+    linea = '-'*78 
+    
     for Nombre, Dirección, Documento, Fecha, Correo, Empresa in lista_empresa_actual:
-        if len(lista_empresa_actual) != 0:
+        # se consideran los nombres de los campos
+        if len(lista_empresa_actual) > 1:
             if coincidencias == False:
                 print(f"{linea}\nEmpresa: {in_empresa}.\nTotal Usuarios: {(len(lista_empresa_actual)-1)}\n{linea}")
                 coincidencias = True
@@ -52,7 +54,7 @@ def opcion_3(csv_viaticos, lista_empresa_actual, in_empresa):
     
     total = 0
     contador = 0 
-    
+         
     try:
         for viaje in csv_viaticos:
             monto = (viaje[2]).replace(",", "")
@@ -66,9 +68,12 @@ def opcion_3(csv_viaticos, lista_empresa_actual, in_empresa):
     except ValueError:
         print("ERROR: No se pudo hacer el cálculo")
         pass
-        
-    total = '{:.2f}'.format(total)
-    print(f"{linea}\n{in_empresa}. ${total} \n{linea}" );
+    
+    if contador >= 1:
+        total = '{:.2f}'.format(total)
+        print(f"{linea}\n{in_empresa}. ${total} \n{linea}" );
+    else:
+        print("No se encontraron coincidencias")
 
 def opcion_4(lista_cliente, csv_viaticos, in_dni, cabecera_cliente, cabecera_viajes):
     
@@ -78,7 +83,7 @@ def opcion_4(lista_cliente, csv_viaticos, in_dni, cabecera_cliente, cabecera_via
     viajes = []
 
     if len(lista_cliente) == 0:
-        print("no hay coincidencias")
+        print("No se encontraron coincidencias")
     else:
         try:
             for viaje in csv_viaticos:
@@ -228,6 +233,7 @@ def comprobacion_viajes(nombre_archivo):
         return flag
 
 def comprobacion_clientes(nombre_archivo):
+
     with open(nombre_archivo, 'r', encoding="utf-8") as csvfile:
         csvreader = csv.reader(csvfile, delimiter=",")
         lista_c_copia = list(csvreader)

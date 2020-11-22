@@ -2,9 +2,10 @@ import funciones
 import os
 
 def menu():
+    
     archivo_clientes = funciones.clientes_archivo()
     funciones.abrir_archivo(archivo_clientes)
-    
+   
     archivo_viaticos = funciones.viaticos_archivo() 
     funciones.abrir_archivo(archivo_viaticos)
     
@@ -13,7 +14,6 @@ def menu():
         exit()
         
     while True:
-
         tipo_log = "Menú"
         funciones.escribir_log(tipo_log)
         
