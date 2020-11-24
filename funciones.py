@@ -26,9 +26,7 @@ def abrir_archivo(nombre_archivo):
         print(f"ERROR: El archivo {nombre_archivo} no se ha encontrado!")
         exit()
 
-def opcion_1(in_nombre, csv_clientes, coincidencias):  
-    linea = '-'*78     
-    
+def opcion_1(in_nombre, csv_clientes, coincidencias, linea):  
     # # Time:  0.01869909999999919
     for Nombre, Dirección, Documento, Fecha, Correo, Empresa in csv_clientes:
         if in_nombre in Nombre.lower():
@@ -38,9 +36,8 @@ def opcion_1(in_nombre, csv_clientes, coincidencias):
     if coincidencias == False:
         print("No se encontraron coincidencias")
 
-def opcion_2(in_empresa, lista_empresa_actual, coincidencias):
-    linea = '-'*78 
-           
+def opcion_2(in_empresa, lista_empresa_actual, coincidencias, linea):
+               
     # Time:  0.019830999999999932
     for Nombre, Dirección, Documento, Fecha, Correo, Empresa in lista_empresa_actual:
         # se consideran los nombres de los campos
@@ -52,9 +49,7 @@ def opcion_2(in_empresa, lista_empresa_actual, coincidencias):
         else:
             print("No se encontraron coincidencias")
     
-def opcion_3(csv_viaticos, lista_empresa_actual, in_empresa):
-    linea = '-'*78
-    
+def opcion_3(csv_viaticos, lista_empresa_actual, in_empresa, linea):
     total = 0
     contador = 0 
          
@@ -78,9 +73,8 @@ def opcion_3(csv_viaticos, lista_empresa_actual, in_empresa):
     else:
         print("No se encontraron coincidencias")
 
-def opcion_4(lista_cliente, csv_viaticos, in_dni, cabecera_cliente, cabecera_viajes):
-    
-    linea = '-'*78
+def opcion_4(lista_cliente, csv_viaticos, in_dni, cabecera_cliente, cabecera_viajes, linea):
+
     total = 0
     cantidad = 0
     viajes = []
@@ -108,7 +102,7 @@ def opcion_4(lista_cliente, csv_viaticos, in_dni, cabecera_cliente, cabecera_via
                 Nombre, Dirección, Documento, Fecha, Correo, Empresa = cliente.rstrip("\n").split(',')
                 print("[{}]".format(cliente))
             
-            print(f"{linea}\nTotal de viajes: {cantidad}, Monto: ${total}\n{linea}")
+            print(f"{linea}\nTotal viajes: {cantidad}, Monto: ${total}\n{linea}")
             
             for Documento, fecha, monto in cabecera_viajes:
                 print("[{}, {}, {}]".format(Documento, fecha, monto))
@@ -141,7 +135,7 @@ def busqueda(archivo_clientes, archivo_viaticos, opcion):
     
     with open("Clientes.csv", 'r', encoding="utf-8") as f_clientes:
         csv_clientes = csv.reader(f_clientes, delimiter=",")
-        
+        linea = '-'*78
         coincidencias = False
         viaticos = 0
 
@@ -153,7 +147,7 @@ def busqueda(archivo_clientes, archivo_viaticos, opcion):
             while in_nombre == "":
                 in_nombre = input("No se acepta un ingreso vacío\nIngrese un nombre para buscar: ")
                 
-            opcion_1(in_nombre, csv_clientes, coincidencias)
+            opcion_1(in_nombre, csv_clientes, coincidencias, linea)
                             
             escribir_log(tipo_log)
                 
@@ -168,7 +162,7 @@ def busqueda(archivo_clientes, archivo_viaticos, opcion):
             # Time:  0.000547499999999701
             lista_empresas = list(csv_clientes)         
             lista_empresa_actual = [[Nombre, Dirección, Documento, Fecha, Correo, Empresa] for Nombre, Dirección, Documento, Fecha, Correo, Empresa in lista_empresas if Empresa == in_empresa or Nombre == "Nombre"]
-            opcion_2(in_empresa, lista_empresa_actual, coincidencias)
+            opcion_2(in_empresa, lista_empresa_actual, coincidencias, linea)
             
             escribir_log(tipo_log)
             
@@ -181,17 +175,16 @@ def busqueda(archivo_clientes, archivo_viaticos, opcion):
                 
                 lista_empresas = list(csv_clientes)
                                
-                # Time:  2.3300000000503474e-05
                 lista_empresa_actual = [[ Documento, Empresa] for Nombre, Dirección, Documento, Fecha, Correo, Empresa in lista_empresas if Nombre != "Nombre"]
-
-                # Time:  4.7200000000025e-05
                 lista_empresa_actual.sort()             
                 
                 in_empresa = input("Ingrese empresa a buscar: ") 
+                while in_empresa == "":
+                    in_empresa = input("No se acepta un ingreso vacío\nIngrese una empresa para buscar: ")
 
                 viaje = next(csv_viaticos, None)
-                
-                opcion_3(csv_viaticos, lista_empresa_actual, in_empresa)
+
+                opcion_3(csv_viaticos, lista_empresa_actual, in_empresa, linea)
                 
             escribir_log(tipo_log)
             
@@ -206,12 +199,14 @@ def busqueda(archivo_clientes, archivo_viaticos, opcion):
                 cabecera_viajes = [next(csv_viaticos, None)]
                 
                 in_dni = input("Ingrese dni a buscar: ")
+                while in_dni == "":
+                    in_dni = input("No se acepta un ingreso vacío\nIngrese un Dni para buscar: ")
                 
                 lista_empresas = list(csv_clientes)
                 
                 lista_cliente = [', '.join([Nombre, Direccion, Documento, Fecha, Correo, Empresa]) for Nombre, Direccion, Documento, Fecha, Correo, Empresa in lista_empresas if Documento == in_dni]
                 
-                opcion_4(lista_cliente, csv_viaticos, in_dni, cabecera_cliente, cabecera_viajes)
+                opcion_4(lista_cliente, csv_viaticos, in_dni, cabecera_cliente, cabecera_viajes, linea)
                 
             escribir_log(tipo_log)
 
